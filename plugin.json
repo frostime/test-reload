@@ -7,25 +7,19 @@
   "backends": [
     "windows",
     "linux",
-    "darwin",
-    "docker",
-    "ios",
-    "android"
+    "darwin"
   ],
   "frontends": [
     "desktop",
-    "mobile",
     "browser-desktop",
     "browser-mobile",
     "desktop-window"
   ],
   "displayName": {
-    "en_US": "Plugin sample with vite",
-    "zh_CN": "插件样例 vite 版"
+    "zh_CN": "测试 Reload Plugin"
   },
   "description": {
-    "en_US": "SiYuan plugin sample with vite",
-    "zh_CN": "使用 vite 开发的思源插件样例"
+    "zh_CN": "测试 Reload Plugin"
   },
   "readme": {
     "en_US": "README.md",
@@ -37,8 +31,5 @@
     ]
   },
   "keywords": [
-    "plugin",
-    "sample",
-    "插件样例"
   ]
 }
