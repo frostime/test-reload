@@ -1,6 +1,6 @@
 {
   "name": "test-reload",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "This is a sample plugin based on vite and svelte for Siyuan (https://b3log.org/siyuan)",
   "repository": "https://github.com/frostime/plugin-sample-vite",

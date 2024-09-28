@@ -11,12 +11,33 @@ import { SettingUtils } from "./libs/setting-utils";
 
 const STORAGE_NAME = "store.json";
 
-const workspaceDir: string = window.siyuan.config.system.workspaceDir;
-const file = 'temp/test-reload-record.txt';
-const filePath = path.join(workspaceDir, file);
+const useLocalLogFile = () => {
 
-const appendFile = (text: string) => {
-    fs.appendFileSync(filePath, text, 'utf8');
+    if (!fs || !path) {
+        console.warn("fs or path is not defined; can not run file logging");
+        return {
+            appendFile: () => { },
+            filePath: '',
+        };
+    }
+
+    const workspaceDir: string = window.siyuan.config.system.workspaceDir;
+    const file = 'temp/test-reload-record.txt';
+    const filePath = path?.join(workspaceDir, file);
+
+    if (!fs.existsSync(filePath)) {
+        //create
+        fs.writeFileSync(filePath, '', 'utf8');
+    }
+
+    const appendFile = (text: string) => {
+        fs.appendFileSync(filePath, text, 'utf8');
+    }
+
+    return {
+        appendFile,
+        filePath,
+    }
 }
 
 export function formatDateToLocalISOString(date: Date) {
@@ -41,16 +62,21 @@ export function formatDateToLocalISOString(date: Date) {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneString}`;
 }
 
+let localFileLog: ReturnType<typeof useLocalLogFile> = {
+    appendFile: () => { },
+    filePath: '',
+}
+
 const logging = (msg: string) => {
     const currentTime = formatDateToLocalISOString(new Date());
     msg = `[${currentTime}] ${msg}`;
     console.log(msg);
-    appendFile(msg + '\n');
+    localFileLog.appendFile(msg + '\n');
 }
 
 const loggingWsMain = (e: CustomEvent<IEventBusMap['ws-main']>) => {
     const { cmd, data, msg } = e.detail;
-    if (! ['reloadPlugin', 'syncing', 'syncMergeResult'].includes(cmd)) {
+    if (!['reloadPlugin', 'syncing', 'syncMergeResult'].includes(cmd)) {
         return
     }
     // data is string ?
@@ -58,7 +84,7 @@ const loggingWsMain = (e: CustomEvent<IEventBusMap['ws-main']>) => {
     if (typeof data === 'object') {
         dataStr = JSON.stringify(data);
     }
-    logging(cmd + ':'+ dataStr + `"${msg}"`);
+    logging(cmd + ':' + dataStr + `"${msg}"`);
 }
 
 export default class PluginSample extends Plugin {
@@ -66,18 +92,17 @@ export default class PluginSample extends Plugin {
     private settingUtils: SettingUtils;
 
     async onload() {
+        localFileLog = useLocalLogFile();
 
         logging('Plugin.onload');
 
-        if (!fs || !path) {
-            console.error("fs or path is not defined; can not run this plugin");
-            return;
-        }
-
-        if (!fs.existsSync(filePath)) {
-            //create
-            fs.writeFileSync(filePath, '', 'utf8');
-        }
+        this.addTopBar({
+            icon: "iconEmoji",
+            title: 'Test Reload',
+            callback: () => {
+                this.setting.open(this.name);
+            }
+        });
 
         this.initSettingUtils();
 
