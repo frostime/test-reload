@@ -4,8 +4,15 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
-const path = window.require("path");
-const fs = window.require("fs");
+let path: typeof import("path") | undefined;
+let fs: typeof import("fs") | undefined;
+
+try {
+    path = (window as any).require("path");
+    fs = (window as any).require("fs");
+} catch (error) {
+    console.warn("Unable to load 'path' and 'fs' modules:", error);
+}
 
 import { SettingUtils } from "./libs/setting-utils";
 

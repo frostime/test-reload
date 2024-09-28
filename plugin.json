@@ -2,18 +2,13 @@
   "name": "test-reload",
   "author": "frostime",
   "url": "https://github.com/frostime/test-reload",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "minAppVersion": "3.0.12",
   "backends": [
-    "windows",
-    "linux",
-    "darwin"
+    "all"
   ],
   "frontends": [
-    "desktop",
-    "browser-desktop",
-    "browser-mobile",
-    "desktop-window"
+    "all"
   ],
   "displayName": {
     "zh_CN": "测试 Reload Plugin"
