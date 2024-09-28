@@ -49,11 +49,16 @@ const logging = (msg: string) => {
 }
 
 const loggingWsMain = (e: CustomEvent<IEventBusMap['ws-main']>) => {
-    const { cmd, data } = e.detail;
+    const { cmd, data, msg } = e.detail;
     if (! ['reloadPlugin', 'syncing', 'syncMergeResult'].includes(cmd)) {
         return
     }
-    logging(cmd + ':'+ JSON.stringify(data));
+    // data is string ?
+    let dataStr = data as string;
+    if (typeof data === 'object') {
+        dataStr = JSON.stringify(data);
+    }
+    logging(cmd + ':'+ dataStr + `"${msg}"`);
 }
 
 export default class PluginSample extends Plugin {
